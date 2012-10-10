@@ -45,6 +45,31 @@ namespace Model
             return comm;
         }
 
+        /// <summary>
+        /// 为command添加参数
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="commandParameters"></param>
+        public static void AttachParameters(DbCommand command, DbParameter[] commandParameters)
+        {
+            if (command == null)
+                throw new ArgumentNullException("command");
+            if (commandParameters != null)
+            {
+                foreach (DbParameter p in commandParameters)
+                {
+                    if (p != null)
+                    {
+                        if ((p.Direction == ParameterDirection.InputOutput || p.Direction == ParameterDirection.Input) && (p.Value == null))
+                        {
+                            p.Value = DBNull.Value;
+                        }
+                        command.Parameters.Add(p);
+                    }
+                }
+            }
+        }
+
 
         //执行dbcommand 并返回一个datatable
         public static DataTable ExecuteSelectCommand(DbCommand command)
